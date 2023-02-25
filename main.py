@@ -348,6 +348,8 @@ def time_day_sex():
                 textposition="top center",
                 name=col)
         )
+    #y軸設定 tick開始　dtick間隔    
+    fig.update_yaxes(tick0=0, dtick=1)    
 
     #レイアウト設定     
     fig.update_layout(
@@ -390,6 +392,8 @@ def time_day_age():
                 textposition="top center",
                 name=col)
         )
+    #y軸設定 tick開始　dtick間隔    
+    fig.update_yaxes(tick0=0, dtick=1)     
 
     #レイアウト設定     
     fig.update_layout(

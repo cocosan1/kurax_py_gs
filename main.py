@@ -22,6 +22,7 @@ SP_SHEET = 'フォームの回答 1'
 # 秘密鍵jsonファイルから認証情報を取得
 #第一引数　秘密鍵のpath　第二引数　どこのAPIにアクセスするか
 #st.secrets[]内は''で囲むこと
+#scpes 今回実際に使うGoogleサービスの範囲を指定
 credentials = service_account.Credentials.from_service_account_info(st.secrets['gcp_service_account'], scopes=[ "https://www.googleapis.com/auth/spreadsheets", ])
 
 #OAuth2のクレデンシャル（認証情報）を使用してGoogleAPIにログイン
@@ -141,6 +142,13 @@ df3_date = df3_date.sort_values('timestamp2')
 age_list = ['年齢層（未成年）', '年齢層（20代）', '年齢層 （30代）', '年齢層（40代）', \
             '年齢層（50代）', '年齢層（60代）']
 
+#性別リスト
+sex_list = ['total', '性別（男性）', '性別（女性）']
+
+#曜日リスト
+day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', ]
+
+#*********************************全体
 def zentai():
   #可視化
     #グラフを描くときの土台となるオブジェクト
@@ -159,7 +167,7 @@ def zentai():
 
     #レイアウト設定     
     fig.update_layout(
-        title='全体',
+        title='日にち/全体',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -167,7 +175,7 @@ def zentai():
 
 def age():
     selected_list = st.multiselect(
-        '年齢層を選択',
+        '年齢層を選択/複数選択可',
         age_list
         )
 
@@ -189,11 +197,208 @@ def age():
 
     #レイアウト設定     
     fig.update_layout(
-        title='年齢層別',
+        title='日にち/年齢層別',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig, use_container_width=True) 
+
+def day_sex():
+  #groupbyで消去されたday_nameを追加
+    df3_dayname = df3[['timestamp2', 'day_name']]
+    df3_date2 = df3_date.merge(df3_dayname, on='timestamp2', how='left')
+
+    df_day = df3_date2.groupby('day_name', as_index=False).mean()
+
+    #grupbyで消えたday_name列の追加
+    dayname_list = []
+    for day_name in df_day['day_name']:
+        if day_name == 'Monday':
+            dayname_list.append(0)
+        elif day_name == 'Tuesday':
+            dayname_list.append(1)
+        elif day_name == 'Wednesday':
+            dayname_list.append(2)
+        elif day_name == 'Thursday':
+            dayname_list.append(3)
+        elif day_name == 'Friday':
+            dayname_list.append(4)
+        elif day_name == 'Saturday':
+            dayname_list.append(5)
+        elif day_name == 'Sunday':
+            dayname_list.append(6)
+
+    df_day['day_num'] = dayname_list
+    df_day = df_day.sort_values('day_num')
+
+    selected_list = st.multiselect(
+            '性別を選択/複数選択可',
+            sex_list
+            )
+
+    #************************可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig = go.Figure()
+    #今期のグラフの追加
+    for col in selected_list:
+        fig.add_trace(
+            go.Scatter(
+                x=df_day['day_name'],
+                y=df_day[col],
+                mode = 'lines+markers+text', #値表示
+                text=round(df_day[col]),
+                textposition="top center",
+                name=col)
+        )
+
+    #レイアウト設定     
+    fig.update_layout(
+        title='曜日/性別',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig, use_container_width=True) 
+
+def day_age():
+  #groupbyで消去されたday_nameを追加
+    df3_dayname = df3[['timestamp2', 'day_name']]
+    df3_date2 = df3_date.merge(df3_dayname, on='timestamp2', how='left')
+
+    df_day = df3_date2.groupby('day_name', as_index=False).mean()
+
+    #grupbyで消えたday_name列の追加
+    dayname_list = []
+    for day_name in df_day['day_name']:
+        if day_name == 'Monday':
+            dayname_list.append(0)
+        elif day_name == 'Tuesday':
+            dayname_list.append(1)
+        elif day_name == 'Wednesday':
+            dayname_list.append(2)
+        elif day_name == 'Thursday':
+            dayname_list.append(3)
+        elif day_name == 'Friday':
+            dayname_list.append(4)
+        elif day_name == 'Saturday':
+            dayname_list.append(5)
+        elif day_name == 'Sunday':
+            dayname_list.append(6)
+
+    df_day['day_num'] = dayname_list
+    df_day = df_day.sort_values('day_num')
+
+    selected_list = st.multiselect(
+            '年齢層を選択/複数選択可',
+            age_list
+            )
+
+    #************************可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig = go.Figure()
+    #今期のグラフの追加
+    for col in selected_list:
+        fig.add_trace(
+            go.Scatter(
+                x=df_day['day_name'],
+                y=df_day[col],
+                mode = 'lines+markers+text', #値表示
+                text=round(df_day[col]),
+                textposition="top center",
+                name=col)
+        )
+
+    #レイアウト設定     
+    fig.update_layout(
+        title='曜日/年齢層',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig, use_container_width=True) 
+
+def time_day_sex():
+   #時間毎に集計
+    df3_hour = df3.groupby(['timestamp2', 'hour'], as_index=False).sum()
+    df3_hour['day_name'] = df3_hour['timestamp2'].map(lambda x: x.day_name())
+
+    dayname = st.selectbox(
+            '曜日を選択',
+            day_list
+            )
+    #曜日で絞込み
+    df3_hour_selected = df3_hour[df3_hour['day_name']== dayname]
+    df3_hour_selected = df3_hour_selected.groupby('hour', as_index=False).mean()
+    df3_hour_selected = df3_hour_selected.sort_values('hour')
+
+    selected_list = st.multiselect(
+            '性別を選択/複数選択可',
+            sex_list
+            )
+
+    #************************可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig = go.Figure()
+    #今期のグラフの追加
+    for col in selected_list:
+        fig.add_trace(
+            go.Scatter(
+                x=df3_hour_selected['hour'][:-2],
+                y=df3_hour_selected[col][:-2],
+                mode = 'lines+markers+text', #値表示
+                text=round(df3_hour_selected[col][:-2]),
+                textposition="top center",
+                name=col)
+        )
+
+    #レイアウト設定     
+    fig.update_layout(
+        title='時間帯/曜日/性別',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig, use_container_width=True) 
+
+def time_day_age():
+   #時間毎に集計
+    df3_hour = df3.groupby(['timestamp2', 'hour'], as_index=False).sum()
+    df3_hour['day_name'] = df3_hour['timestamp2'].map(lambda x: x.day_name())
+
+    dayname = st.selectbox(
+            '曜日を選択',
+            day_list
+            )
+    #曜日で絞込み
+    df3_hour_selected = df3_hour[df3_hour['day_name']== dayname]
+    df3_hour_selected = df3_hour_selected.groupby('hour', as_index=False).mean()
+    df3_hour_selected = df3_hour_selected.sort_values('hour')
+
+    selected_list = st.multiselect(
+            '年齢層を選択/複数選択可',
+            age_list
+            )
+
+    #************************可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig = go.Figure()
+    #今期のグラフの追加
+    for col in selected_list:
+        fig.add_trace(
+            go.Scatter(
+                x=df3_hour_selected['hour'][:-2],
+                y=df3_hour_selected[col][:-2],
+                mode = 'lines+markers+text', #値表示
+                text=round(df3_hour_selected[col][:-2]),
+                textposition="top center",
+                name=col)
+        )
+
+    #レイアウト設定     
+    fig.update_layout(
+        title='時間帯/曜日/年齢層',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig, use_container_width=True) 
+  
 
 
 
@@ -203,8 +408,12 @@ def main():
     # アプリケーション名と対応する関数のマッピング
     apps = {
         '-': None,
-        '全体': zentai,
-        '年齢層別': age,
+        '日にち/全体': zentai,
+        '日にち/年齢層別': age,
+        '曜日/性別': day_sex,
+        '曜日/年齢層': day_age,
+        '時間帯/曜日/性別': time_day_sex,
+        '時間帯/曜日/年齢層': time_day_age,
 
     }
     selected_app_name = st.sidebar.selectbox(label='分析項目の選択',

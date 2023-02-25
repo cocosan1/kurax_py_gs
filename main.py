@@ -342,9 +342,9 @@ def time_day_sex():
         fig.add_trace(
             go.Scatter(
                 x=df3_hour_selected['hour'],
-                y=df3_hour_selected[col],
+                y=df3_hour_selected[col][:-2],
                 mode = 'lines+markers+text', #値表示
-                text=round(df3_hour_selected[col]),
+                text=round(df3_hour_selected[col][:-2]),
                 textposition="top center",
                 name=col)
         )
@@ -386,9 +386,9 @@ def time_day_age():
         fig.add_trace(
             go.Scatter(
                 x=df3_hour_selected['hour'],
-                y=df3_hour_selected[col],
+                y=df3_hour_selected[col][:-2],
                 mode = 'lines+markers+text', #値表示
-                text=round(df3_hour_selected[col]),
+                text=round(df3_hour_selected[col][:-2]),
                 textposition="top center",
                 name=col)
         )

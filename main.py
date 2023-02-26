@@ -125,6 +125,10 @@ df3['timestamp2'] = df3['timestamp'].map(lambda x: x.strftime('%Y-%m-%d'))
 #datetime化
 df3['timestamp2'] = pd.to_datetime(df3['timestamp2'])
 
+df3['timestamp3'] = df3['timestamp'].map(lambda x: x.strftime('%Y-%m'))
+#datetime化
+df3['timestamp3'] = pd.to_datetime(df3['timestamp3'])
+
 df3['day_name'] = df3['timestamp'].map(lambda x: x.day_name())
 df3['hour'] = df3['timestamp'].map(lambda x: x.hour)
 df3['day_num'] = df3['timestamp'].map(lambda x: x.dayofweek)
@@ -134,9 +138,36 @@ df3['day_num'] = df3['day_num'].astype(str)
 
 df3['total'] = df3.loc[:, '年齢層（未成年）' :'年齢層（60代）'].sum(axis=1)
 
+#組数の算出 日にち
+kumi_dict = {}
+for  date in df3['timestamp2'].unique():
+  df = df3[df3['timestamp2']==date]
+  kumi_dict[date] = len(df)
+
+df_kumi = pd.DataFrame(kumi_dict, index=['組数']).T
+
+#組数の算出 月
+kumi_month_dict = {}
+for  month in df3['timestamp3'].unique():
+  df = df3[df3['timestamp3']==month]
+  kumi_month_dict[month] = len(df)
+
+df_kumi_month = pd.DataFrame(kumi_month_dict, index=['組数']).T
+
 #日にちで集計
 df3_date = df3.groupby('timestamp2', as_index=False).sum()
 df3_date = df3_date.sort_values('timestamp2')
+
+#月で集計
+df3_month = df3.groupby('timestamp3', as_index=False).sum()
+df3_month = df3_month.sort_values('timestamp3')
+
+#組数のmerge 日にち
+df3_date = df3_date.merge(df_kumi, left_on='timestamp2', right_index=True, how='inner')
+
+#組数のmerge 月
+df3_month = df3_month.merge(df_kumi_month, left_on='timestamp3', right_index=True, how='inner')
+df3_month = df3_month.sort_values('timestamp3', ascending=False)
 
 #年齢層リスト
 age_list = ['年齢層（未成年）', '年齢層（20代）', '年齢層 （30代）', '年齢層（40代）', \
@@ -148,6 +179,200 @@ sex_list = ['total', '性別（男性）', '性別（女性）']
 #曜日リスト
 day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', ]
 
+#時間リスト
+time_list = ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
+
+#1日集計
+def oneday():
+    selected_date = st.selectbox(
+            '日にちを選択',
+            df3_date['timestamp2'].sort_values(ascending=False)
+            )
+    
+    df_selected = df3_date[df3_date['timestamp2']==selected_date]
+
+    col1, col2, col3 = st.columns([1, 3, 5])
+
+    with col1:
+        st.metric('組数', value= df_selected['組数'])
+        st.metric('人数', value= df_selected['total'])
+
+    with col2:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig = go.Figure()
+
+        for col in df_selected.columns[7:9]:
+           
+            fig.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=df_selected[col],
+                    text=df_selected[col],
+                    textposition="outside", 
+                    name= col)
+        )
+
+        #レイアウト設定     
+        fig.update_layout(
+            title='人数(性別)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig, use_container_width=True) 
+
+    with col3:
+       #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig2 = go.Figure()
+
+        for col in df_selected.columns[1:7]:
+           
+            fig2.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=df_selected[col],
+                    text=df_selected[col],
+                    textposition="outside", 
+                    name=col)
+        )
+
+        #レイアウト設定     
+        fig2.update_layout(
+            title='人数(年齢層)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig2, use_container_width=True)
+
+    #時間帯別組数
+    time_dict = {}
+    df3_selected = df3[df3['timestamp2']== selected_date] 
+    for time in time_list:
+       df = df3_selected[df3_selected['hour']==time]
+       time_dict[time] = len(df)
+
+    df_time = pd.DataFrame(time_dict, index=['組数']).T
+
+    #可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig3 = go.Figure()
+    #今期のグラフの追加
+
+    fig3.add_trace(
+        go.Scatter(
+            x=df_time.index,
+            y=df_time['組数'],
+            mode = 'lines+markers+text', #値表示
+            text=df_time['組数'],
+            textposition="top center",
+            name='来店組数')
+        )
+
+    #レイアウト設定     
+    fig3.update_layout(
+        title='1日集計',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig3, use_container_width=True) 
+
+def month():
+   
+    selected_month = st.selectbox(
+                '月を選択',
+                df3_month['timestamp3'].sort_values(ascending=False)
+                )
+    
+    df_selected = df3_month[df3_month['timestamp3']==selected_month]
+
+    col1, col2, col3 = st.columns([1, 3, 5])
+
+    with col1:
+        st.metric('組数', value= df_selected['組数'])
+        st.metric('人数', value= df_selected['total'])
+
+    with col2:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig = go.Figure()
+
+        for col in df_selected.columns[7:9]:
+            
+            fig.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=df_selected[col],
+                    text=df_selected[col],
+                    textposition="outside", 
+                    name= col)
+        )
+
+        #レイアウト設定     
+        fig.update_layout(
+            title='人数(性別)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig, use_container_width=True) 
+
+    with col3:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig2 = go.Figure()
+
+        for col in df_selected.columns[1:7]:
+            
+            fig2.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=df_selected[col],
+                    text=df_selected[col],
+                    textposition="outside", 
+                    name=col)
+        )
+
+        #レイアウト設定     
+        fig2.update_layout(
+            title='人数(年齢層)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig2, use_container_width=True)
+
+    #時間帯別組数
+    time_dict = {}
+    df3_selected = df3[df3['timestamp3']== selected_month] 
+    for time in time_list:
+        df = df3_selected[df3_selected['hour']==time]
+        time_dict[time] = len(df)
+
+    df_time = pd.DataFrame(time_dict, index=['組数']).T
+
+    #可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig3 = go.Figure()
+    #今期のグラフの追加
+
+    fig3.add_trace(
+        go.Scatter(
+            x=df_time.index,
+            y=df_time['組数'],
+            mode = 'lines+markers+text', #値表示
+            text=df_time['組数'],
+            textposition="top center",
+            name='来店組数')
+        )
+
+    #レイアウト設定     
+    fig3.update_layout(
+        title='集計(月)',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig3, use_container_width=True) 
+   
+
 #*********************************全体
 def zentai():
   #可視化
@@ -158,11 +383,11 @@ def zentai():
     fig.add_trace(
         go.Scatter(
             x=df3_date['timestamp2'],
-            y=df3_date['total'],
+            y=df3_date['組数'],
             # mode = 'lines+markers+text', #値表示
             # text=round(df_results[col][:2]/10000),
             # textposition="top center",
-            name='来店者数')
+            name='来店組数')
         )
 
     #レイアウト設定     
@@ -172,6 +397,31 @@ def zentai():
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig, use_container_width=True) 
+
+def zentai_month():
+
+    #可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig_month = go.Figure()
+    #今期のグラフの追加
+
+    fig_month.add_trace(
+        go.Scatter(
+            x=df3_month['timestamp3'],
+            y=df3_month['組数'],
+            mode = 'lines+markers+text', #値表示
+            text=df3_month['組数'],
+            textposition="top center",
+            name='来店組数')
+        )
+
+    #レイアウト設定     
+    fig_month.update_layout(
+        title='全体(月)',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig_month, use_container_width=True) 
 
 def age():
     selected_list = st.multiselect(
@@ -197,7 +447,7 @@ def age():
 
     #レイアウト設定     
     fig.update_layout(
-        title='日にち/年齢層別',
+        title='日にち/年齢層別/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -253,7 +503,7 @@ def day_sex():
 
     #レイアウト設定     
     fig.update_layout(
-        title='曜日/性別',
+        title='曜日/性別/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -309,7 +559,7 @@ def day_age():
 
     #レイアウト設定     
     fig.update_layout(
-        title='曜日/年齢層',
+        title='曜日/年齢層/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -353,7 +603,7 @@ def time_day_sex():
 
     #レイアウト設定     
     fig.update_layout(
-        title='時間帯/曜日/性別',
+        title='時間帯/曜日/性別/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -397,7 +647,7 @@ def time_day_age():
 
     #レイアウト設定     
     fig.update_layout(
-        title='時間帯/曜日/年齢層',
+        title='時間帯/曜日/年齢層/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -412,7 +662,10 @@ def main():
     # アプリケーション名と対応する関数のマッピング
     apps = {
         '-': None,
-        '日にち/全体': zentai,
+        '集計/日': oneday,
+        '集計/月': month,
+        '全体/日にち': zentai,
+        '全体/月': zentai_month,
         '日にち/年齢層別': age,
         '曜日/性別': day_sex,
         '曜日/年齢層': day_age,

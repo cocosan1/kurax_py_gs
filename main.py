@@ -182,7 +182,8 @@ day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 
 #時間リスト
 time_list = ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
 
-#1日集計
+#********************************************************関数
+#*************************1日集計
 def oneday():
     selected_date = st.selectbox(
             '日にちを選択',
@@ -277,6 +278,7 @@ def oneday():
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig3, use_container_width=True) 
 
+#*********************************月集計
 def month():
    
     selected_month = st.selectbox(
@@ -339,6 +341,34 @@ def month():
         )
         #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
         st.plotly_chart(fig2, use_container_width=True)
+
+    # col4, col5 = st.columns(2)
+    # with col4:
+    #     st.markdown('###### 比率(性別)')
+
+    #     label_lst = []
+    #     temp_list = []
+    #     for col in df_selected.columns[7:9]:
+    #        label_lst.append(col)
+    #        temp_list.append(df_selected[col])
+           
+    #     fig_sex = go.Figure()
+    #     fig_sex.add_trace(
+    #        go.Pie(
+    #         labels=label_lst,
+    #         values=temp_list
+    #         )
+    #     )
+    #     fig_sex.update_layout(
+    #         showlegend=True, #凡例表示
+    #         # height=200,
+    #         # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+    #         )
+    #     fig_sex.update_traces(textposition='inside', textinfo='label+percent') 
+    #     #inside グラフ上にテキスト表示
+    #     st.plotly_chart(fig_sex, use_container_width=True)
+    #     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+
 
     #時間帯別組数
     time_dict = {}
@@ -448,6 +478,36 @@ def age():
     #レイアウト設定     
     fig.update_layout(
         title='日にち/年齢層別/人数',
+        showlegend=True #凡例表示
+    )
+    #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+    st.plotly_chart(fig, use_container_width=True) 
+
+def age_month():
+    selected_list = st.multiselect(
+        '年齢層を選択/複数選択可',
+        age_list
+        )
+
+
+    #可視化
+    #グラフを描くときの土台となるオブジェクト
+    fig = go.Figure()
+    #今期のグラフの追加
+    for col in selected_list:
+        fig.add_trace(
+            go.Scatter(
+                x=df3_month['timestamp3'],
+                y=df3_month[col],
+                mode = 'lines+markers+text', #値表示
+                text=df3_month[col],
+                textposition="top center",
+                name=col)
+        )
+
+    #レイアウト設定     
+    fig.update_layout(
+        title='月/年齢層別/人数',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -664,9 +724,10 @@ def main():
         '-': None,
         '集計/日': oneday,
         '集計/月': month,
-        '全体/日にち': zentai,
+        '全体/日': zentai,
         '全体/月': zentai_month,
-        '日にち/年齢層別': age,
+        '年齢層別/日': age,
+        '年齢層別/月': age_month,
         '曜日/性別': day_sex,
         '曜日/年齢層': day_age,
         '時間帯/曜日/性別': time_day_sex,

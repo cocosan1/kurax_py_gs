@@ -185,6 +185,7 @@ time_list = ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19']
 #********************************************************関数
 #*************************1日集計
 def oneday():
+    st.markdown('##### 集計/日')
     selected_date = st.selectbox(
             '日にちを選択',
             df3_date['timestamp2'].sort_values(ascending=False)
@@ -280,6 +281,7 @@ def oneday():
 
 #*********************************月集計
 def month():
+    st.markdown('##### 集計/月')
    
     selected_month = st.selectbox(
                 '月を選択',
@@ -342,34 +344,66 @@ def month():
         #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
         st.plotly_chart(fig2, use_container_width=True)
 
-    # col4, col5 = st.columns(2)
-    # with col4:
-    #     st.markdown('###### 比率(性別)')
+    col4, col5 = st.columns(2)
+    with col4:
+        st.markdown('###### 比率(性別)')
 
-    #     label_lst = []
-    #     temp_list = []
-    #     for col in df_selected.columns[7:9]:
-    #        label_lst.append(col)
-    #        temp_list.append(df_selected[col])
-           
-    #     fig_sex = go.Figure()
-    #     fig_sex.add_trace(
-    #        go.Pie(
-    #         labels=label_lst,
-    #         values=temp_list
-    #         )
-    #     )
-    #     fig_sex.update_layout(
-    #         showlegend=True, #凡例表示
-    #         # height=200,
-    #         # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
-    #         )
-    #     fig_sex.update_traces(textposition='inside', textinfo='label+percent') 
-    #     #inside グラフ上にテキスト表示
-    #     st.plotly_chart(fig_sex, use_container_width=True)
-    #     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        label_lst = []
+        temp_list = []
+        col_num = 7
+        for col in df_selected.columns[7:9]:
+            val = df_selected.iat[0, col_num]
+            label_lst.append(col)
+            temp_list.append(int(val))
+            col_num += 1
+     
+        fig_sex = go.Figure()
+        fig_sex.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_sex.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
 
+        st.plotly_chart(fig_sex, use_container_width=True)
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
 
+    with col5:
+        st.markdown('###### 比率(年齢層別)')
+
+        label_lst = []
+        temp_list = []
+        col_num = 1
+        for col in df_selected.columns[1:7]:
+            val = df_selected.iat[0, col_num]
+            label_lst.append(col)
+            temp_list.append(int(val))
+            col_num += 1
+     
+        fig_age = go.Figure()
+        fig_age.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_age.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
+
+        st.plotly_chart(fig_age, use_container_width=True)
+ 
     #時間帯別組数
     time_dict = {}
     df3_selected = df3[df3['timestamp3']== selected_month] 
@@ -401,6 +435,128 @@ def month():
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig3, use_container_width=True) 
+
+#*********************************累計集計
+def ruikei():
+    st.markdown('##### 集計/累計 月平均')
+
+    col1, col2, col3 = st.columns([1, 3, 5])
+
+    with col1:
+        ave_kumi = round(df3_month['組数'].sum() / df3_month['timestamp3'].nunique())
+        ave_cust = round(df3_month['total'].sum() / df3_month['timestamp3'].nunique())
+
+        st.metric('組数', value= ave_kumi)
+        st.metric('人数', value= ave_cust)
+
+    with col2:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig = go.Figure()
+
+        for col in df3_month.columns[7:9]:
+            ave_kumi = round(df3_month[col].sum() / df3_month['timestamp3'].nunique())
+            
+            fig.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=[ave_kumi],
+                    text=ave_kumi,
+                    textposition="inside", 
+                    name= col)
+        )
+
+        #レイアウト設定     
+        fig.update_layout(
+            title='人数(性別)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig, use_container_width=True) 
+
+    with col3:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig2 = go.Figure()
+
+        for col in df3_month.columns[1:7]:
+            ave_kumi = round(df3_month[col].sum() / df3_month['timestamp3'].nunique())
+            
+            fig2.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=[round(ave_kumi)],
+                    text=ave_kumi,
+                    textposition="inside", 
+                    name=col)
+        )
+
+        #レイアウト設定     
+        fig2.update_layout(
+            title='人数(年齢層)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig2, use_container_width=True)
+
+    col4, col5 = st.columns(2)
+    with col4:
+        st.markdown('###### 比率(性別)')
+
+        label_lst = []
+        temp_list = []
+        col_num = 7
+        for col in df3_month.columns[7:9]:
+            ave_kumi = round(df3_month[col].sum() / df3_month['timestamp3'].nunique())
+            label_lst.append(col)
+            temp_list.append(ave_kumi)
+     
+        fig_sex = go.Figure()
+        fig_sex.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_sex.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
+
+        st.plotly_chart(fig_sex, use_container_width=True)
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+
+    with col5:
+        st.markdown('###### 比率(年齢層別)')
+
+        label_lst = []
+        temp_list = []
+        col_num = 1
+        for col in df3_month.columns[1:7]:
+            ave_kumi = round(df3_month[col].sum() / df3_month['timestamp3'].nunique())
+            label_lst.append(col)
+            temp_list.append(ave_kumi)
+     
+        fig_age = go.Figure()
+        fig_age.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_age.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
+
+        st.plotly_chart(fig_age, use_container_width=True)
+ 
    
 
 #*********************************全体
@@ -724,6 +880,7 @@ def main():
         '-': None,
         '集計/日': oneday,
         '集計/月': month,
+        '集計/累計': ruikei,
         '全体/日': zentai,
         '全体/月': zentai_month,
         '年齢層別/日': age,

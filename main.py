@@ -11,6 +11,12 @@ import plotly.graph_objects as go
 st.set_page_config(page_title='kurax_py_gs')
 st.markdown('#### shop仙台 来場者分析')
 
+#クリアキャッシュ機能
+def clear_cache():
+    read_data = st.empty()
+
+st.button("データの更新",on_click=clear_cache)
+
 @st.cache_data
 def get_data():
     SP_SHEET = 'フォームの回答 1'

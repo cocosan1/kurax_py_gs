@@ -6,7 +6,7 @@ from google.oauth2 import service_account
 import datetime
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
-# from oauth2client.service_account import ServiceAccountCredentials
+
 
 st.set_page_config(page_title='kurax_py_gs')
 st.markdown('#### shop仙台 来場者分析')
@@ -33,7 +33,6 @@ data= worksheet.get_all_values()
 # スプレッドシートをDataFrameに取り込む
 df = pd.DataFrame(data[1:], columns=data[0])
 
-#カラム名変更
 df2 = df.copy()
 
 #ゼロ埋め
@@ -209,6 +208,11 @@ def oneday():
                     textposition="outside", 
                     name= col)
         )
+        #y軸の設定　tick0開始位置　dtick目盛り間隔
+        fig.update_yaxes(
+            tick0=0,
+            dtick=1
+            )
 
         #レイアウト設定     
         fig.update_layout(
@@ -233,6 +237,11 @@ def oneday():
                     textposition="outside", 
                     name=col)
         )
+        #y軸の設定　tick0開始位置　dtick目盛り間隔
+        fig2.update_yaxes(
+            tick0=0,
+            dtick=1
+            )
 
         #レイアウト設定     
         fig2.update_layout(
@@ -264,6 +273,11 @@ def oneday():
             text=df_time['組数'],
             textposition="top center",
             name='来店組数')
+        )
+    #y軸の設定　tick0開始位置　dtick目盛り間隔
+    fig3.update_yaxes(
+        tick0=0,
+        dtick=1
         )
 
     #レイアウト設定     
@@ -555,7 +569,7 @@ def ruikei():
    
 
 #*********************************全体
-def zentai():
+def suii():
   #可視化
     #グラフを描くときの土台となるオブジェクト
     fig = go.Figure()
@@ -573,13 +587,13 @@ def zentai():
 
     #レイアウト設定     
     fig.update_layout(
-        title='日にち/全体',
+        title='推移/日',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig, use_container_width=True) 
 
-def zentai_month():
+def suii_month():
 
     #可視化
     #グラフを描くときの土台となるオブジェクト
@@ -598,7 +612,7 @@ def zentai_month():
 
     #レイアウト設定     
     fig_month.update_layout(
-        title='全体(月)',
+        title='推移/月',
         showlegend=True #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
@@ -875,9 +889,9 @@ def main():
         '-': None,
         '集計/日': oneday,
         '集計/月': month,
-        '集計/累計': ruikei,
-        '全体/日': zentai,
-        '全体/月': zentai_month,
+        '集計/累計/月平均': ruikei,
+        '推移/日': suii,
+        '推移/月': suii_month,
         '年齢層別/日': age,
         '年齢層別/月': age_month,
         '曜日/性別': day_sex,

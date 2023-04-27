@@ -9,12 +9,15 @@ col1, col2, col3 = st.columns(3)
 with col1:
     img_megane = Image.open('img/アンケート.png')
     st.image(img_megane, width=50)
-    st.markdown('###### 入力フォーム')
+    st.markdown('###### 入力フォーム/google form')
 
     link = '[仙台店](https://docs.google.com/forms/d/e/1FAIpQLSfN8-ZERfNQXB30-m5WT1I-baquX0HVKaWQfM-WI94vJBlgtw/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[神谷町店](https://docs.google.com/forms/d/e/1FAIpQLSc2ihGhD7PX4_aNhQwHIxEGu5kTFKzJWEgFlN5gQt2XZsB95g/viewform?usp=sf_link)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[ミッドタウン店](https://docs.google.com/forms/d/e/1FAIpQLSdd1rb4DDEaEzTiQQnYOCX3hUK5Rdtq2b4VWxRByzhTfllieA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
@@ -24,12 +27,15 @@ with col1:
 with col2:
     img_megane = Image.open('img/file.png')
     st.image(img_megane, width=50)
-    st.markdown('###### データ記録ファイル')
+    st.markdown('###### データ記録ファイル/spreadsheet')
 
     link = '[仙台店](https://docs.google.com/spreadsheets/d/1egsKlud3E88ISztAWpLCIoMyJMqL5FOmHmPz84zP7sQ/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[神谷町店](https://docs.google.com/spreadsheets/d/1_kYafUvb-5dTSk5WOvwXziVwxf5rBXfrITVHMtSTVa8/edit?usp=sharing)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[ミッドタウン店](https://docs.google.com/spreadsheets/d/1987tNuYDI_1jZHqPHnuuXjSx8vwDl-JNIZODRxmBIXQ/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
@@ -45,6 +51,9 @@ with col3:
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[神谷町店](https://cocosan1-kurax-py-gs-kamiyacho-1fzajz.streamlit.app/)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[ミッドタウン店](https://cocosan1-kurax-py-gs-midtown-eoyj11.streamlit.app/)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://cocosan1-kurax-py-gs-oosaka-8l24g4.streamlit.app/)'

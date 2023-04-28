@@ -252,8 +252,12 @@ df_oosaka = get_data('SP_SHHET_KEY_OOSAKA')
 df_oosaka2 = make_data(df_oosaka)
 val_oosaka = int(df_oosaka2['組数'][0])
 
-x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店']
-y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka]
+df_fukuoka = get_data('SP_SHHET_KEY_FUKUOKA')
+df_fukuoka2 = make_data(df_fukuoka)
+val_fukuoka = int(df_fukuoka2['組数'][0])
+
+x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店', '福岡店']
+y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka, val_fukuoka]
 
 #全店グラフ作成
 with st.expander('来店組数/本日', expanded=False):
@@ -284,6 +288,9 @@ with col1:
     link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[福岡店](https://docs.google.com/forms/d/e/1FAIpQLSeuZQqbYlDRB8xe5ap3kZCx4cf7Hi1bxf8yDS4YJU95tWfzzw/viewform?usp=sf_link)'
+    st.markdown(link, unsafe_allow_html=True)
+
 #spreadsheet
 with col2:
     img_megane = Image.open('img/file.png')
@@ -308,6 +315,9 @@ with col2:
     link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[福岡店](https://docs.google.com/spreadsheets/d/160s4VTER_bHB8AZ2ehcUDLZKZjUJUNBOcUq1cJbydFI/edit?usp=sharing)'
+    st.markdown(link, unsafe_allow_html=True)
+
 #streamlit
 with col3:
     img_megane = Image.open('img/graph.png')
@@ -330,4 +340,7 @@ with col3:
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://cocosan1-kurax-py-gs-oosaka-8l24g4.streamlit.app/)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[福岡店](https://cocosan1-kurax-py-gs-fukuoka-c7ff97.streamlit.app/)'
     st.markdown(link, unsafe_allow_html=True)

@@ -240,25 +240,24 @@ df_midtown = get_data('SP_SHHET_KEY_MIDTOWN')
 df_midtown2 = make_data(df_midtown)
 val_midtown = int(df_midtown2['組数'][0])
 
+df_takayama = get_data('SP_SHHET_KEY_TAKAYAMA')
+df_takayama2 = make_data(df_takayama)
+val_takayama = int(df_takayama2['組数'][0])
+
 df_oosaka = get_data('SP_SHHET_KEY_OOSAKA')
 df_oosaka2 = make_data(df_oosaka)
 val_oosaka = int(df_oosaka2['組数'][0])
 
-x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '大阪店']
-y_list = [val_sendai, val_kamiyacho, val_midtown, val_oosaka]
+x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '大阪店']
+y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_oosaka]
 
 #全店グラフ作成
-make_graph(x_list, y_list)
+with st.expander('来店組数/本日', expanded=False):
+    make_graph(x_list, y_list)
 
 col1, col2, col3 = st.columns(3)
-with col1:
-    st.write('仙台店')
-   
-
-
-col21, col22, col23 = st.columns(3)
 #google form
-with col21:
+with col1:
     img_megane = Image.open('img/アンケート.png')
     st.image(img_megane, width=50)
     st.markdown('###### 入力フォーム/google form')
@@ -272,11 +271,14 @@ with col21:
     link = '[ミッドタウン店](https://docs.google.com/forms/d/e/1FAIpQLSdd1rb4DDEaEzTiQQnYOCX3hUK5Rdtq2b4VWxRByzhTfllieA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[高山店](https://docs.google.com/forms/d/e/1FAIpQLSeleAgqgS4e2vkOey5lnIBG4zHIte9gxQRFCtzV4vKQo4ITFA/viewform?usp=sf_link)'
+    st.markdown(link, unsafe_allow_html=True)
+
     link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
 #spreadsheet
-with col22:
+with col2:
     img_megane = Image.open('img/file.png')
     st.image(img_megane, width=50)
     st.markdown('###### データ保存/spreadsheet')
@@ -290,11 +292,14 @@ with col22:
     link = '[ミッドタウン店](https://docs.google.com/spreadsheets/d/1987tNuYDI_1jZHqPHnuuXjSx8vwDl-JNIZODRxmBIXQ/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[高山店](https://docs.google.com/spreadsheets/d/1yI5flPSnVQYElfrJW3Ht0twyI5SedayhhPKLmLBurII/edit?usp=sharing)'
+    st.markdown(link, unsafe_allow_html=True)
+
     link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
 #streamlit
-with col23:
+with col3:
     img_megane = Image.open('img/graph.png')
     st.image(img_megane, width=50)
     st.markdown('###### 集計アプリ')
@@ -306,6 +311,9 @@ with col23:
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[ミッドタウン店](https://cocosan1-kurax-py-gs-midtown-eoyj11.streamlit.app/)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[高山店](https://cocosan1-kurax-py-gs-takayama-nuqjeo.streamlit.app/)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://cocosan1-kurax-py-gs-oosaka-8l24g4.streamlit.app/)'

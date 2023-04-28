@@ -244,12 +244,16 @@ df_takayama = get_data('SP_SHHET_KEY_TAKAYAMA')
 df_takayama2 = make_data(df_takayama)
 val_takayama = int(df_takayama2['組数'][0])
 
+df_nagoya = get_data('SP_SHHET_KEY_NAGOYA')
+df_nagoya2 = make_data(df_nagoya)
+val_nagoya = int(df_nagoya2['組数'][0])
+
 df_oosaka = get_data('SP_SHHET_KEY_OOSAKA')
 df_oosaka2 = make_data(df_oosaka)
 val_oosaka = int(df_oosaka2['組数'][0])
 
-x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '大阪店']
-y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_oosaka]
+x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店']
+y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka]
 
 #全店グラフ作成
 with st.expander('来店組数/本日', expanded=False):
@@ -274,6 +278,9 @@ with col1:
     link = '[高山店](https://docs.google.com/forms/d/e/1FAIpQLSeleAgqgS4e2vkOey5lnIBG4zHIte9gxQRFCtzV4vKQo4ITFA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[名古屋店](https://docs.google.com/forms/d/e/1FAIpQLSfnaJUQpl9g6q6CpdzHdojjgjA_6TfM2SeBdxTuBe_GF56Qgg/viewform?usp=sf_link)'
+    st.markdown(link, unsafe_allow_html=True)
+
     link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
     st.markdown(link, unsafe_allow_html=True)
 
@@ -295,6 +302,9 @@ with col2:
     link = '[高山店](https://docs.google.com/spreadsheets/d/1yI5flPSnVQYElfrJW3Ht0twyI5SedayhhPKLmLBurII/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
+    link = '[名古屋店](https://docs.google.com/spreadsheets/d/1gpged-YStsGNqwYg-qxItsouJf2sI3OOT-MIF_6HXxw/edit?usp=sharing)'
+    st.markdown(link, unsafe_allow_html=True)
+
     link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
     st.markdown(link, unsafe_allow_html=True)
 
@@ -314,6 +324,9 @@ with col3:
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[高山店](https://cocosan1-kurax-py-gs-takayama-nuqjeo.streamlit.app/)'
+    st.markdown(link, unsafe_allow_html=True)
+
+    link = '[名古屋店](https://cocosan1-kurax-py-gs-nagoya-qabwyg.streamlit.app/)'
     st.markdown(link, unsafe_allow_html=True)
 
     link = '[大阪店](https://cocosan1-kurax-py-gs-oosaka-8l24g4.streamlit.app/)'

@@ -5,14 +5,15 @@ import pandas as pd
 import gspread
 import json
 from google.oauth2 import service_account
-import datetime
+from datetime import datetime
+from datetime import date
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
 st.set_page_config(page_title='link_page')
 st.markdown('### link page/shop来店者管理')
 
-def get_data(SP_SHHET_KEY):
+def get_data(SP_SHEET_KEY):
     SP_SHEET = 'フォームの回答 1'
 
     # 秘密鍵jsonファイルから認証情報を取得
@@ -25,7 +26,7 @@ def get_data(SP_SHHET_KEY):
     gc = gspread.authorize(credentials)
 
     # IDを指定して、Googleスプレッドシートのワークブックを取得
-    sh = gc.open_by_key(st.secrets[SP_SHHET_KEY])
+    sh = gc.open_by_key(st.secrets[SP_SHEET_KEY])
 
     # シート名を指定して、ワークシートを選択
     worksheet = sh.worksheet(SP_SHEET)
@@ -182,15 +183,24 @@ def make_data(df2):
 
     #集計/日にち
     
-    selected_date = df3_date['timestamp2'].sort_values(ascending=False)[0]
-    # selected_date = st.selectbox(
-    #         '日にちを選択',
-    #         df3_date['timestamp2'].sort_values(ascending=False)
-    #         )
+    # selected_date = df3_date['timestamp2'].sort_values(ascending=False)
     
-    df_selected = df3_date[df3_date['timestamp2']==selected_date]
+    # df_selected = df3_date[df3_date['timestamp2']==selected_date]
 
-    return df_selected
+    # 現在の日付を取得する
+    now = datetime.now()
+
+    # 指定された形式の文字列にフォーマットする
+    now_string = now.strftime('%Y-%m-%d 00:00:00')
+
+    # フォーマットされた文字列をdatetimeオブジェクトに変換する
+    date_format = '%Y-%m-%d %H:%M:%S'
+    d_now = datetime.strptime(now_string, date_format)
+  
+    df_today = df3_date[df3_date['timestamp2']==d_now]
+
+    return df_today
+    
    
 def make_graph(x_list, y_list):
     #可視化
@@ -215,46 +225,66 @@ def make_graph(x_list, y_list):
 
     #レイアウト設定     
     fig.update_layout(
-        title='来店組数/本日',
+        title=f'{date.today()}',
         showlegend=False #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig, use_container_width=True) 
 
-# st.metric('組数', value= df_selected['組数'])
-# st.metric('人数', value= df_selected['total'])
-
+  
 
 st.markdown('##### 集計/日')
 
 #データ集約
-df_sendai = get_data('SP_SHHET_KEY_SENDAI')
+df_sendai = get_data('SP_SHEET_KEY_SENDAI')
 df_sendai2 = make_data(df_sendai)
-val_sendai = int(df_sendai2['組数'][0])
+if len(df_sendai2) == 0:
+    val_sendai = 0
+else:    
+    val_sendai = int(df_sendai2['組数'])
 
-df_kamiyacho = get_data('SP_SHHET_KEY_KAMIYACHO')
+df_kamiyacho = get_data('SP_SHEET_KEY_KAMIYACHO')
 df_kamiyacho2 = make_data(df_kamiyacho)
-val_kamiyacho = int(df_kamiyacho2['組数'][0])
+if len(df_kamiyacho2) == 0:
+    val_kamiyacho = 0
+else:
+    val_kamiyacho = int(df_kamiyacho2['組数'])
 
-df_midtown = get_data('SP_SHHET_KEY_MIDTOWN')
+
+df_midtown = get_data('SP_SHEET_KEY_MIDTOWN')
 df_midtown2 = make_data(df_midtown)
-val_midtown = int(df_midtown2['組数'][0])
-
-df_takayama = get_data('SP_SHHET_KEY_TAKAYAMA')
+if len(df_midtown2) == 0:
+    val_midtown = 0
+else:
+    val_midtown = int(df_midtown2['組数'])
+      
+df_takayama = get_data('SP_SHEET_KEY_TAKAYAMA')
 df_takayama2 = make_data(df_takayama)
-val_takayama = int(df_takayama2['組数'][0])
+if len(df_takayama2) == 0:
+    val_takayama = 0
+else:    
+    val_takayama = int(df_takayama2['組数'])
 
-df_nagoya = get_data('SP_SHHET_KEY_NAGOYA')
+df_nagoya = get_data('SP_SHEET_KEY_NAGOYA')
 df_nagoya2 = make_data(df_nagoya)
-val_nagoya = int(df_nagoya2['組数'][0])
+if len(df_nagoya2) == 0:
+    val_nagoya = 0
+else:    
+    val_nagoya = int(df_nagoya2['組数'])
 
-df_oosaka = get_data('SP_SHHET_KEY_OOSAKA')
+df_oosaka = get_data('SP_SHEET_KEY_OOSAKA')
 df_oosaka2 = make_data(df_oosaka)
-val_oosaka = int(df_oosaka2['組数'][0])
+if len(df_oosaka2) == 0:
+    val_oosaka = 0
+else:     
+    val_oosaka = int(df_oosaka2['組数'])
 
-df_fukuoka = get_data('SP_SHHET_KEY_FUKUOKA')
+df_fukuoka = get_data('SP_SHEET_KEY_FUKUOKA')
 df_fukuoka2 = make_data(df_fukuoka)
-val_fukuoka = int(df_fukuoka2['組数'][0])
+if len(df_fukuoka2) == 0:
+    val_fukuoka = 0
+else:    
+    val_fukuoka = int(df_fukuoka2['組数'])
 
 x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店', '福岡店']
 y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka, val_fukuoka]
@@ -324,23 +354,7 @@ with col3:
     st.image(img_megane, width=50)
     st.markdown('###### 集計アプリ')
 
-    link = '[仙台店](https://cocosan1-kurax-py-gs-main-k9pxb6.streamlit.app/)'
+    link = '[全店共通](https://cocosan1-kurax-py-gs-calc-sj6dv8.streamlit.app/)'
     st.markdown(link, unsafe_allow_html=True)
 
-    link = '[神谷町店](https://cocosan1-kurax-py-gs-kamiyacho-1fzajz.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
 
-    link = '[ミッドタウン店](https://cocosan1-kurax-py-gs-midtown-eoyj11.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[高山店](https://cocosan1-kurax-py-gs-takayama-nuqjeo.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[名古屋店](https://cocosan1-kurax-py-gs-nagoya-qabwyg.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[大阪店](https://cocosan1-kurax-py-gs-oosaka-8l24g4.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[福岡店](https://cocosan1-kurax-py-gs-fukuoka-c7ff97.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)

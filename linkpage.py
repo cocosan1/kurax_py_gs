@@ -13,6 +13,8 @@ import plotly.graph_objects as go
 st.set_page_config(page_title='link_page')
 st.markdown('### link page/shop来店者管理')
 
+#**************************************************************************************関数開始
+
 def get_data(SP_SHEET_KEY):
     SP_SHEET = 'フォームの回答 1'
 
@@ -183,9 +185,6 @@ def make_data(df2):
 
     #集計/日にち
     
-    # selected_date = df3_date['timestamp2'].sort_values(ascending=False)
-    
-    # df_selected = df3_date[df3_date['timestamp2']==selected_date]
 
     # 現在の日付を取得する
     now = datetime.now()
@@ -225,136 +224,163 @@ def make_graph(x_list, y_list):
 
     #レイアウト設定     
     fig.update_layout(
-        title=f'{date.today()}',
+        title=f'{datetime.now()}',
         showlegend=False #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig, use_container_width=True) 
+#***********************************************************************関数終了
 
-  
+tab1, tab2, tab3 = st.tabs(['リンクページ', '本日の来店組数', 'spreadsheetへのアクセスについて'])
 
-st.markdown('##### 集計/日')
+with tab1:
 
-#データ集約
-df_sendai = get_data('SP_SHEET_KEY_SENDAI')
-df_sendai2 = make_data(df_sendai)
-if len(df_sendai2) == 0:
-    val_sendai = 0
-else:    
-    val_sendai = int(df_sendai2['組数'])
+    col1, col2, col3 = st.columns(3)
+    #google form
+    with col1:
+        img_megane = Image.open('img/アンケート.png')
+        st.image(img_megane, width=50)
+        st.markdown('###### 入力フォーム/google form')
 
-df_kamiyacho = get_data('SP_SHEET_KEY_KAMIYACHO')
-df_kamiyacho2 = make_data(df_kamiyacho)
-if len(df_kamiyacho2) == 0:
-    val_kamiyacho = 0
-else:
-    val_kamiyacho = int(df_kamiyacho2['組数'])
+        link = '[仙台店](https://docs.google.com/forms/d/e/1FAIpQLSfN8-ZERfNQXB30-m5WT1I-baquX0HVKaWQfM-WI94vJBlgtw/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[神谷町店](https://docs.google.com/forms/d/e/1FAIpQLSc2ihGhD7PX4_aNhQwHIxEGu5kTFKzJWEgFlN5gQt2XZsB95g/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[ミッドタウン店](https://docs.google.com/forms/d/e/1FAIpQLSdd1rb4DDEaEzTiQQnYOCX3hUK5Rdtq2b4VWxRByzhTfllieA/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[高山店](https://docs.google.com/forms/d/e/1FAIpQLSeleAgqgS4e2vkOey5lnIBG4zHIte9gxQRFCtzV4vKQo4ITFA/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[名古屋店](https://docs.google.com/forms/d/e/1FAIpQLSfnaJUQpl9g6q6CpdzHdojjgjA_6TfM2SeBdxTuBe_GF56Qgg/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[福岡店](https://docs.google.com/forms/d/e/1FAIpQLSeuZQqbYlDRB8xe5ap3kZCx4cf7Hi1bxf8yDS4YJU95tWfzzw/viewform?usp=sf_link)'
+        st.markdown(link, unsafe_allow_html=True)
+
+    #spreadsheet
+    with col2:
+        img_megane = Image.open('img/file.png')
+        st.image(img_megane, width=50)
+        st.markdown('###### データ保存/spreadsheet')
+
+        link = '[仙台店](https://docs.google.com/spreadsheets/d/1egsKlud3E88ISztAWpLCIoMyJMqL5FOmHmPz84zP7sQ/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[神谷町店](https://docs.google.com/spreadsheets/d/1_kYafUvb-5dTSk5WOvwXziVwxf5rBXfrITVHMtSTVa8/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[ミッドタウン店](https://docs.google.com/spreadsheets/d/1987tNuYDI_1jZHqPHnuuXjSx8vwDl-JNIZODRxmBIXQ/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[高山店](https://docs.google.com/spreadsheets/d/1yI5flPSnVQYElfrJW3Ht0twyI5SedayhhPKLmLBurII/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[名古屋店](https://docs.google.com/spreadsheets/d/1gpged-YStsGNqwYg-qxItsouJf2sI3OOT-MIF_6HXxw/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+        link = '[福岡店](https://docs.google.com/spreadsheets/d/160s4VTER_bHB8AZ2ehcUDLZKZjUJUNBOcUq1cJbydFI/edit?usp=sharing)'
+        st.markdown(link, unsafe_allow_html=True)
+
+    #streamlit
+    with col3:
+        img_megane = Image.open('img/graph.png')
+        st.image(img_megane, width=50)
+        st.markdown('###### 集計アプリ')
+
+        link = '[全店共通](https://cocosan1-kurax-py-gs-calc-sj6dv8.streamlit.app/)'
+        st.markdown(link, unsafe_allow_html=True)
+
+with tab2:
+    #全店グラフ作成
+    st.markdown('###### 集計/本日')
+    if st.button('全店の来店組数を見る ▼'): 
+
+        #データ集約
+        df_sendai = get_data('SP_SHEET_KEY_SENDAI')
+        df_sendai2 = make_data(df_sendai)
+        if len(df_sendai2) == 0:
+            val_sendai = 0
+        else:    
+            val_sendai = int(df_sendai2['組数'])
+
+        df_kamiyacho = get_data('SP_SHEET_KEY_KAMIYACHO')
+        df_kamiyacho2 = make_data(df_kamiyacho)
+        if len(df_kamiyacho2) == 0:
+            val_kamiyacho = 0
+        else:
+            val_kamiyacho = int(df_kamiyacho2['組数'])
 
 
-df_midtown = get_data('SP_SHEET_KEY_MIDTOWN')
-df_midtown2 = make_data(df_midtown)
-if len(df_midtown2) == 0:
-    val_midtown = 0
-else:
-    val_midtown = int(df_midtown2['組数'])
-      
-df_takayama = get_data('SP_SHEET_KEY_TAKAYAMA')
-df_takayama2 = make_data(df_takayama)
-if len(df_takayama2) == 0:
-    val_takayama = 0
-else:    
-    val_takayama = int(df_takayama2['組数'])
+        df_midtown = get_data('SP_SHEET_KEY_MIDTOWN')
+        df_midtown2 = make_data(df_midtown)
+        if len(df_midtown2) == 0:
+            val_midtown = 0
+        else:
+            val_midtown = int(df_midtown2['組数'])
+            
+        df_takayama = get_data('SP_SHEET_KEY_TAKAYAMA')
+        df_takayama2 = make_data(df_takayama)
+        if len(df_takayama2) == 0:
+            val_takayama = 0
+        else:    
+            val_takayama = int(df_takayama2['組数'])
 
-df_nagoya = get_data('SP_SHEET_KEY_NAGOYA')
-df_nagoya2 = make_data(df_nagoya)
-if len(df_nagoya2) == 0:
-    val_nagoya = 0
-else:    
-    val_nagoya = int(df_nagoya2['組数'])
+        df_nagoya = get_data('SP_SHEET_KEY_NAGOYA')
+        df_nagoya2 = make_data(df_nagoya)
+        if len(df_nagoya2) == 0:
+            val_nagoya = 0
+        else:    
+            val_nagoya = int(df_nagoya2['組数'])
 
-df_oosaka = get_data('SP_SHEET_KEY_OOSAKA')
-df_oosaka2 = make_data(df_oosaka)
-if len(df_oosaka2) == 0:
-    val_oosaka = 0
-else:     
-    val_oosaka = int(df_oosaka2['組数'])
+        df_oosaka = get_data('SP_SHEET_KEY_OOSAKA')
+        df_oosaka2 = make_data(df_oosaka)
+        if len(df_oosaka2) == 0:
+            val_oosaka = 0
+        else:     
+            val_oosaka = int(df_oosaka2['組数'])
 
-df_fukuoka = get_data('SP_SHEET_KEY_FUKUOKA')
-df_fukuoka2 = make_data(df_fukuoka)
-if len(df_fukuoka2) == 0:
-    val_fukuoka = 0
-else:    
-    val_fukuoka = int(df_fukuoka2['組数'])
+        df_fukuoka = get_data('SP_SHEET_KEY_FUKUOKA')
+        df_fukuoka2 = make_data(df_fukuoka)
+        if len(df_fukuoka2) == 0:
+            val_fukuoka = 0
+        else:    
+            val_fukuoka = int(df_fukuoka2['組数'])
 
-x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店', '福岡店']
-y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka, val_fukuoka]
+        x_list = ['仙台店', '神谷町店', 'ミッドタウン店', '高山店', '名古屋店', '大阪店', '福岡店']
+        y_list = [val_sendai, val_kamiyacho, val_midtown, val_takayama, val_nagoya, val_oosaka, val_fukuoka]
 
-#全店グラフ作成
-with st.expander('来店組数/本日', expanded=False):
-    make_graph(x_list, y_list)
+        #グラフ作成
+        make_graph(x_list, y_list)
 
-col1, col2, col3 = st.columns(3)
-#google form
-with col1:
-    img_megane = Image.open('img/アンケート.png')
-    st.image(img_megane, width=50)
-    st.markdown('###### 入力フォーム/google form')
+with tab3:
+        st.write('■ google chromeに下記のアドレスでログイン → spreadsheetにアクセス')
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown('###### 仙台店')
+            st.write('hida.kitutuki44@gmail.com')
+            st.markdown('###### 神谷町店')
+            st.write('hida.kitutuki47@gmail.com')
+            st.markdown('###### ミッドタウン店')
+            st.write('hida.kitutuki17@gmail.com')
+            st.markdown('###### 高山店')
+            st.write('hida.kitutuki38@gmail.com')
+            
+        with col2: 
+            st.markdown('###### 名古屋店')
+            st.write('hida.kitutuki25@gmail.com')
+            st.markdown('###### 大阪店')
+            st.write('hida.kitutuki30@gmail.com')
+            st.markdown('###### 福岡店')
+            st.write('hida.kitutuki34@gmail.com')   
 
-    link = '[仙台店](https://docs.google.com/forms/d/e/1FAIpQLSfN8-ZERfNQXB30-m5WT1I-baquX0HVKaWQfM-WI94vJBlgtw/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[神谷町店](https://docs.google.com/forms/d/e/1FAIpQLSc2ihGhD7PX4_aNhQwHIxEGu5kTFKzJWEgFlN5gQt2XZsB95g/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[ミッドタウン店](https://docs.google.com/forms/d/e/1FAIpQLSdd1rb4DDEaEzTiQQnYOCX3hUK5Rdtq2b4VWxRByzhTfllieA/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[高山店](https://docs.google.com/forms/d/e/1FAIpQLSeleAgqgS4e2vkOey5lnIBG4zHIte9gxQRFCtzV4vKQo4ITFA/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[名古屋店](https://docs.google.com/forms/d/e/1FAIpQLSfnaJUQpl9g6q6CpdzHdojjgjA_6TfM2SeBdxTuBe_GF56Qgg/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[大阪店](https://docs.google.com/forms/d/e/1FAIpQLScP7mR9o1RMhCUvScljKK6pY9BLy2aQ_T6P4IXk8ODLRlNcQA/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[福岡店](https://docs.google.com/forms/d/e/1FAIpQLSeuZQqbYlDRB8xe5ap3kZCx4cf7Hi1bxf8yDS4YJU95tWfzzw/viewform?usp=sf_link)'
-    st.markdown(link, unsafe_allow_html=True)
-
-#spreadsheet
-with col2:
-    img_megane = Image.open('img/file.png')
-    st.image(img_megane, width=50)
-    st.markdown('###### データ保存/spreadsheet')
-
-    link = '[仙台店](https://docs.google.com/spreadsheets/d/1egsKlud3E88ISztAWpLCIoMyJMqL5FOmHmPz84zP7sQ/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[神谷町店](https://docs.google.com/spreadsheets/d/1_kYafUvb-5dTSk5WOvwXziVwxf5rBXfrITVHMtSTVa8/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[ミッドタウン店](https://docs.google.com/spreadsheets/d/1987tNuYDI_1jZHqPHnuuXjSx8vwDl-JNIZODRxmBIXQ/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[高山店](https://docs.google.com/spreadsheets/d/1yI5flPSnVQYElfrJW3Ht0twyI5SedayhhPKLmLBurII/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[名古屋店](https://docs.google.com/spreadsheets/d/1gpged-YStsGNqwYg-qxItsouJf2sI3OOT-MIF_6HXxw/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[大阪店](https://docs.google.com/spreadsheets/d/1tiE2znpKPPqQqGpSSQcuIXxOOg89jKyj9FotJWlL67Q/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-    link = '[福岡店](https://docs.google.com/spreadsheets/d/160s4VTER_bHB8AZ2ehcUDLZKZjUJUNBOcUq1cJbydFI/edit?usp=sharing)'
-    st.markdown(link, unsafe_allow_html=True)
-
-#streamlit
-with col3:
-    img_megane = Image.open('img/graph.png')
-    st.image(img_megane, width=50)
-    st.markdown('###### 集計アプリ')
-
-    link = '[全店共通](https://cocosan1-kurax-py-gs-calc-sj6dv8.streamlit.app/)'
-    st.markdown(link, unsafe_allow_html=True)
 
 

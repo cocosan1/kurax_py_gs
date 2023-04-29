@@ -7,6 +7,7 @@ import json
 from google.oauth2 import service_account
 from datetime import datetime
 from datetime import date
+from zoneinfo import ZoneInfo #日本時間指定用
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
@@ -222,9 +223,12 @@ def make_graph(x_list, y_list):
         dtick=1
         )
 
+    #日本時間の表示
+    now = datetime.now(ZoneInfo("Asia/Tokyo"))
+    formatted_now = now.strftime("%Y-%m-%d %H:%M")
     #レイアウト設定     
     fig.update_layout(
-        title=f'{datetime.now()}',
+        title=f'{formatted_now} 現在',
         showlegend=False #凡例表示
     )
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅

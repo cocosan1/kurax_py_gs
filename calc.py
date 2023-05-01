@@ -6,10 +6,16 @@ from google.oauth2 import service_account
 import datetime
 import plotly.figure_factory as ff
 import plotly.graph_objects as go
+from PIL import Image
 
 
 st.set_page_config(page_title='shop_all')
 st.markdown('#### shop 来場者分析')
+
+img_megane = Image.open('img/home.png')
+st.sidebar.image(img_megane, width=30)
+link = '[linkpage](https://cocosan1-kurax-py-gs-linkpage-rxa5f5.streamlit.app/)'
+st.sidebar.markdown(link, unsafe_allow_html=True) 
 
 shop_dict ={
     '--店舗名--': 'none',
@@ -928,7 +934,8 @@ def main():
 
     if selected_app_name == '-':
         st.info('サイドバーから分析項目を選択してください')
-        st.stop()  
+        st.stop() 
+
 
     # 選択されたアプリケーションを処理する関数を呼び出す
     render_func = apps[selected_app_name]

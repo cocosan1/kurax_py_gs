@@ -188,7 +188,7 @@ def make_data(df2):
     
 
     # 現在の日付を取得する
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Tokyo"))
 
     # 指定された形式の文字列にフォーマットする
     now_string = now.strftime('%Y-%m-%d 00:00:00')

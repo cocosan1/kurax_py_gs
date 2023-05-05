@@ -220,7 +220,7 @@ def make_graph(x_list, y_list):
     #y軸の設定　tick0開始位置　dtick目盛り間隔
     fig.update_yaxes(
         tick0=0,
-        dtick=1
+        dtick=5
         )
 
     #日本時間の表示

@@ -157,11 +157,11 @@ def make_data(df2):
     df_kumi_month = pd.DataFrame(kumi_month_dict, index=['組数']).T
 
     #日にちで集計
-    df3_date = df3.groupby('timestamp2', as_index=False).sum()
+    df3_date = df3.groupby('timestamp2', as_index=False)['total'].sum()
     df3_date = df3_date.sort_values('timestamp2')
 
     #月で集計
-    df3_month = df3.groupby('timestamp3', as_index=False).sum()
+    df3_month = df3.groupby('timestamp3', as_index=False)['total'].sum()
     df3_month = df3_month.sort_values('timestamp3')
 
     #組数のmerge 日にち

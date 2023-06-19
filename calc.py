@@ -319,7 +319,7 @@ def oneday():
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig3, use_container_width=True) 
 
-#*********************************月集計
+#********************************************************************************月集計
 def month():
     st.markdown('##### 集計/月')
    
@@ -476,8 +476,8 @@ def month():
     #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
     st.plotly_chart(fig3, use_container_width=True) 
 
-#*********************************累計集計
-# def ruikei():
+# #*********************************累計集計
+# def ruikei_meanmonth():
 #     st.markdown('##### 集計/累計 月平均')
 
 #     col1, col2, col3 = st.columns([1, 3, 5])
@@ -596,6 +596,126 @@ def month():
 #             )
 
 #         st.plotly_chart(fig_age, use_container_width=True)
+
+#*********************************累計集計
+def ruikei():
+    st.markdown('##### 集計/累計')
+
+    col1, col2, col3 = st.columns([2, 2, 4])
+
+    with col1:
+        kumi = df3_month['組数'].sum()
+        cust = df3_month['total'].sum()
+        st.metric('組数', value= kumi)
+        st.metric('人数', value= cust)
+
+    with col2:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig = go.Figure()
+
+        for col in df3_month.columns[7:9]:
+            kumi = df3_month[col].sum()
+            
+            fig.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=[kumi],
+                    text=f'{kumi}',
+                    textposition="inside", 
+                    name= col)
+        )
+
+        #レイアウト設定     
+        fig.update_layout(
+            title='人数(性別)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig, use_container_width=True) 
+
+    with col3:
+        #可視化
+        #グラフを描くときの土台となるオブジェクト
+        fig2 = go.Figure()
+
+        for col in df3_month.columns[1:7]:
+            kumi = df3_month[col].sum()
+            
+            fig2.add_trace(
+                go.Bar(
+                    x=[col],
+                    y=[kumi],
+                    text=f'{kumi}',
+                    textposition="inside", 
+                    name=col)
+        )
+
+        #レイアウト設定     
+        fig2.update_layout(
+            title='人数(年齢層)',
+            showlegend=False #凡例表示
+        )
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+        st.plotly_chart(fig2, use_container_width=True)
+
+    col4, col5 = st.columns(2)
+    with col4:
+        st.markdown('###### 比率(性別)')
+
+        label_lst = []
+        temp_list = []
+        col_num = 7
+        for col in df3_month.columns[7:9]:
+            kumi = df3_month[col].sum()
+            label_lst.append(col)
+            temp_list.append(kumi)
+     
+        fig_sex = go.Figure()
+        fig_sex.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_sex.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
+
+        st.plotly_chart(fig_sex, use_container_width=True)
+        #plotly_chart plotlyを使ってグラグ描画　グラフの幅が列の幅
+
+    with col5:
+        st.markdown('###### 比率(年齢層別)')
+
+        label_lst = []
+        temp_list = []
+        col_num = 1
+        for col in df3_month.columns[1:7]:
+            kumi = df3_month[col].sum()
+            label_lst.append(col)
+            temp_list.append(kumi)
+     
+        fig_age = go.Figure()
+        fig_age.add_trace(
+            go.Pie(
+            labels=label_lst,
+            values=temp_list,
+            textposition='inside',
+            textinfo='label+percent'
+            )
+        )
+        fig_age.update_layout(
+            showlegend=False, #凡例表示
+            height=450,
+            # margin={'l': 20, 'r': 60, 't': 0, 'b': 0},
+            )
+
+        st.plotly_chart(fig_age, use_container_width=True)
  
    
 
@@ -920,7 +1040,8 @@ def main():
         '-': None,
         '集計/日': oneday,
         '集計/月': month,
-        # '集計/累計/月平均': ruikei,
+        # '集計/累計/月平均': ruikei_meanmonth,
+        '集計/累計': ruikei,
         # '推移/日': suii,
         '推移/月': suii_month,
         # '年齢層別/日': age,
